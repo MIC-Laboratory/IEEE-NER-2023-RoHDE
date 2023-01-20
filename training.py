@@ -1,18 +1,13 @@
 
 
-from matplotlib import pyplot as plt
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 from dataset import dataset
 
 from model.mobilenetv2 import MobileNetV2
-from model.Vgg import VGG
-from model.resnet import ResNet101
-from torch.utils.tensorboard import SummaryWriter
 from dataset import dataset
 import torch
 import torch.nn as nn
-import numpy as np
 import os
 best = 0
 training_path = "data/noise/LC"

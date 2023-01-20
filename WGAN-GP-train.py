@@ -3,13 +3,9 @@
 Training of WGAN-GP
 """
 
-from ctypes import util
 import torch
-import torch.nn as nn
 import torch.optim as optim
-import torchvision
 import os
-import numpy as np
 import PIL.Image
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
@@ -19,7 +15,6 @@ from model.Generator import Generator
 from dataset import dataset
 from tqdm import tqdm
 from model.mobilenetv2 import MobileNetV2
-from matplotlib import pyplot as plt
 from fastdtw import fastdtw
 from scipy.spatial.distance import euclidean
 

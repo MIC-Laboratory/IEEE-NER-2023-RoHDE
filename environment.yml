@@ -1,0 +1,14 @@
+name: sEMG
+channels:
+  - defaults
+dependencies:
+  - python=3.9
+  - pytorch
+  - torchvision
+  - cudatoolkit=11.3
+  - torchaudio
+  - tqdm
+  - numpy
+  - matplotlib
+  - tensorboard
+  - fastdtw
