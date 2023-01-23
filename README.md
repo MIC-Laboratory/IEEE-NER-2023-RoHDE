@@ -5,16 +5,16 @@ High-density electromyography (HD EMG)-based Pattern Recognition (PR) has attrac
 ## Dataset
 We are using a private noisy EMG dataset.
 The noisy EMG data set consists of the following seven hand and wrist gestures: no movement,wrist supination, wrist pronation, hand close, hand open, wristflexion, and wrist extension. To evaluate its performance, we experimented with two common disturbances of EMG recordings in this study: Contact Artifacts (CA) and Loose Contacts (LC). The figrue below shows two representative trials of HD EMG signals contaminated by LC (Left) and CA (Right), respectively. The LC disturbances were simulated by purposely peeling back the last two rows of an 8×8 HD EMG electrode grid (e.g., channels 8, 16, 24, etc), and placing a towel between those electrodes and the skin. In the CA trials, noise was introduced by tapping a pen on approximately the last 3 dozen electrodes (156-192) at a rate of 4-5 Hz. The exact electrodes affected vary from strike to strike.  
-![CA and LC Noise](HD_EMG_LC_CA.png)
+![CA and LC Noise](Images/HD_EMG_LC_CA.png)
 ## RoHDE Overall Achitecture
-![Overall Architechture](Overall_Achiecture.png)
+![Overall Architechture](Images/Overall_Achiecture.png)
 
 ## Experiment Result
-![Experiment Result](Experiment.png)
+![Experiment Result](Images/Experiment.png)
 
 ## Synthetic Noise EMG signal
-![Synthetic CA](Synthetic%20CA.png)
-![Synthetic LC](Synthetic%20LC.png)
+![Synthetic CA](Images/Synthetic%20CA.png)
+![Synthetic LC](Images/Synthetic%20LC.png)
 
 ## Quick Start
 ### Dependency
@@ -42,9 +42,9 @@ python WGAN-GP-train.py
 ```
 ### EMG-base Gesture Reconition model training
 ```
-python training.py
+python EMG-Classifier.py
 ```
 ### Robust  EMG-base Gesture Reconition model training
 ```
-python main.py
+python RoHDE.py
 ```

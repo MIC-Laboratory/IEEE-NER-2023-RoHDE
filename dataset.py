@@ -12,29 +12,20 @@ class dataset(Dataset):
         self.image_size1 = image_size1
         self.image_size2 = image_size2
         self.data,self.label = self.extra_data(root,train,all)
-        # if train:
-        #     # self.data,self.label = self.data_filter(self.data,root,self.label)
-        #     self.data,self.label = self.load_from_numpy(generated_CA_root,self.data,self.label)
+
         
 
     
     def __len__(self):
-        # return 1
         return len(self.data)
 
     def __getitem__(self, idx):
         
-        # for i in range(27600):
-        #     if (np.amax(self.data[i]) > 10):
-        #         data = self.data[i]
-        #         label = self.label[i].to(torch.int)
-        #         break
+
         data = self.data[idx]
         label = self.label[idx].astype(int)
-        # label = self.label[idx].to(torch.int)
         data = self.NormalizeData(data)
 
-        # data = data.reshape(1,data.shape[0])
         
         data = data.reshape(1,self.image_size1,self.image_size2)
 
@@ -44,9 +35,7 @@ class dataset(Dataset):
         
     
     def NormalizeData(self,data):
-        # data = (data-np.min(data))/(np.max(data)-np.min(data))
-        # data = (data-np.mean(data))/np.std(data)
-        #data = 2*data-1
+
         return data
 
     def load_from_numpy(self,root,data,label):
@@ -80,8 +69,6 @@ class dataset(Dataset):
         for k in range(data.shape[0]):
             original_clean_data[k][126:136] = final_data[k][0:10].reshape(-1)
             original_clean_data[k][192-53:] = final_data[k][63-53:].reshape(-1)
-            # original_clean_label[k][126:136] = final_label[k][0:10].reshape(-1)
-            # original_clean_label[k][192-53:] = final_label[k][63-53:].reshape(-1)
         
         
         
@@ -90,7 +77,6 @@ class dataset(Dataset):
         if (root.split("/")[-1] == "LC"):
             filtered_data = data.T
             filtered_data = filtered_data[71]
-            # filtered_data = filtered_data[8::8]
             filtered_label = None
             for i in range(8):
                 if filtered_label is None:
@@ -103,12 +89,6 @@ class dataset(Dataset):
             return filtered_data,filtered_label
         if (root.split("/")[-1] == "CA"):
             max_index = set()
-            # for time_frame in range(data.shape[0]):
-            #     channel_index = np.argmax(data[time_frame])
-            #     if data[time_frame][channel_index] > 1:
-            #         max_index.add(channel_index)
-            # for i in range(126,192):
-            #     max_index.add(i)
             for i in range(127):
                 max_index.add(i)
             filtered_data = data.T
