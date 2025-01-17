@@ -11,7 +11,7 @@ class Discriminator(nn.Module):
             self._block(features_d * 2, features_d * 4, (3,4),(1,2),(1,1)),
             self._block(features_d * 4, features_d * 8, (4,3),(2,1),(1,1)),
 
-            nn.Conv2d(features_d * 32, 1, kernel_size=(4,3), stride=(2,2), padding=0),
+            nn.Conv2d(features_d * 8, 1, kernel_size=(4,3), stride=(2,2), padding=0),
         )
         self.image_size1 = image_size1
         self.image_size2 = image_size2

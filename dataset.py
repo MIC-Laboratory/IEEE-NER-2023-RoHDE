@@ -6,7 +6,7 @@ from torchvision.transforms.functional import normalize
 import torch
 class dataset(Dataset):
 
-    def __init__(self, root,image_size1,image_size2,generated_CA_root="",train=False,all=False,channel=1):
+    def __init__(self, root,image_size1,image_size2=1,generated_CA_root="",train=False,all=False,channel=1):
         self.root = root
         self.channel = channel
         self.image_size1 = image_size1

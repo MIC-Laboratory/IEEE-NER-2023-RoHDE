@@ -14,7 +14,7 @@ from model.Discriminator import Discriminator
 from model.Generator import Generator
 from dataset import dataset
 from tqdm import tqdm
-from model.mobilenetv2 import MobileNetV2
+# from model.mobilenetv2 import MobileNetV2
 from fastdtw import fastdtw
 from scipy.spatial.distance import euclidean
 
@@ -23,7 +23,8 @@ from torchvision.transforms import ToTensor
 device = "cuda" if torch.cuda.is_available() else "cpu"
 LEARNING_RATE = 1e-4
 BATCH_SIZE = 64
-IMAGE_SIZE1 = 3840
+IMAGE_SIZE1 = 8
+IMAGE_SIZE2 = 24
 CHANNELS_IMG = 1
 Z_DIM = 100
 NUM_EPOCHS = 3000
@@ -36,7 +37,7 @@ EMBBED_SIZE = 100
 NUM_CLASSES = 8
 ROOT = "data/noise/CA"
 NUM_WORKERS = 16
-MOBILENET_PRETRAIN_WEIGHT = "weight/ICELab/Mobilenet/Training_noise_testnoise/CA_CA/94.2069"
+# MOBILENET_PRETRAIN_WEIGHT = "weight/ICELab/Mobilenet/Training_noise_testnoise/CA_CA/94.2069"
 BASE_WEIGHT_PATH = "weight/TestGan/"
 BASE_LOG_PATH = "Experiment_data/TestGAN/"
 DATASET_TYPE = ROOT.split("/")[-1]
@@ -47,7 +48,7 @@ for i in range(1):
 
     torch.pi = torch.acos(torch.zeros(1)).item() * 2
 
-    datasets = dataset(root=ROOT,image_size1=IMAGE_SIZE1, all=True,train=True,channel=i,generated_CA_root="Generated CA")
+    datasets = dataset(root=ROOT,image_size1=IMAGE_SIZE1,image_size2=IMAGE_SIZE2, all=True,train=True,channel=i,generated_CA_root="Generated CA")
     loader = DataLoader(
         datasets,
         batch_size=BATCH_SIZE,
@@ -57,12 +58,12 @@ for i in range(1):
     writer = SummaryWriter(BASE_LOG_PATH)
 
 
-    gen = Generator(Z_DIM, CHANNELS_IMG, FEATURES_GEN,IMAGE_SIZE1,EMBBED_SIZE,NUM_CLASSES).to(device)
-    critic = Discriminator(CHANNELS_IMG, FEATURES_CRITIC,IMAGE_SIZE1,NUM_CLASSES).to(device)
-    mobilenet = MobileNetV2(num_classes=8,input_layer=1).to(device=device)
+    gen = Generator(Z_DIM, CHANNELS_IMG, FEATURES_GEN,IMAGE_SIZE1,IMAGE_SIZE2,EMBBED_SIZE,NUM_CLASSES).to(device)
+    critic = Discriminator(CHANNELS_IMG, FEATURES_CRITIC,IMAGE_SIZE1,IMAGE_SIZE2,NUM_CLASSES).to(device)
+    # mobilenet = MobileNetV2(num_classes=8,input_layer=1).to(device=device)
     initialize_weights(gen)
     initialize_weights(critic)
-    mobilenet.load_state_dict(torch.load(MOBILENET_PRETRAIN_WEIGHT))
+    # mobilenet.load_state_dict(torch.load(MOBILENET_PRETRAIN_WEIGHT))
 
     opt_gen = optim.Adam(gen.parameters(), lr=LEARNING_RATE, betas=(0.0, 0.9))
     opt_critic = optim.Adam(critic.parameters(), lr=LEARNING_RATE, betas=(0.0, 0.9))
@@ -73,7 +74,7 @@ for i in range(1):
     gen.train()
     critic.train()
     temp_batch_idx = 0
-    mobilenet.eval()
+    # mobilenet.eval()
     for epoch in range(NUM_EPOCHS):
         correlation = 0
         last_label = None
@@ -88,7 +89,7 @@ for i in range(1):
                 for _ in range(CRITIC_ITERATIONS):
                     x =torch.linspace(-torch.pi,torch.pi,Z_DIM)
                     noise = (0.1 * torch.randn(cur_batch_size, Z_DIM)+0.9*torch.sin(x))
-                    noise = noise.unsqueeze(2).to(device)
+                    noise = noise.unsqueeze(2).unsqueeze(3).to(device)
                     fake = gen(noise,labels)
                     critic_real = critic(real,labels).reshape(-1)
                     critic_fake = critic(fake,labels).reshape(-1)

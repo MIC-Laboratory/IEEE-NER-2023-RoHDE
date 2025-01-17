@@ -15,8 +15,8 @@ def initialize_weights(model):
             nn.init.normal_(m.weight.data, 0.0, 0.02)
 
 def gradient_penalty(critic, labels,real, fake, device="cpu"):
-    BATCH_SIZE, C, H = real.shape
-    alpha = torch.rand((BATCH_SIZE, 1, 1)).repeat(1, C, H).to(device)
+    BATCH_SIZE, C, H, W = real.shape
+    alpha = torch.rand((BATCH_SIZE, 1, 1,1)).repeat(1, C, H, W).to(device)
     interpolated_images = real * alpha + fake * (1 - alpha)
 
     # Calculate critic scores
