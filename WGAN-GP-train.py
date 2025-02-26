@@ -36,7 +36,7 @@ LAMBDA_GP = 10
 EMBBED_SIZE = 100
 NUM_CLASSES = 8
 ROOT = "data/noise/CA"
-NUM_WORKERS = 16
+NUM_WORKERS = 2
 # MOBILENET_PRETRAIN_WEIGHT = "weight/ICELab/Mobilenet/Training_noise_testnoise/CA_CA/94.2069"
 BASE_WEIGHT_PATH = "weight/TestGan/"
 BASE_LOG_PATH = "Experiment_data/TestGAN/"
@@ -53,7 +53,8 @@ for i in range(1):
         datasets,
         batch_size=BATCH_SIZE,
         shuffle=True,
-        num_workers=NUM_WORKERS
+        num_workers=NUM_WORKERS,
+        pin_memory=True,
     )
     writer = SummaryWriter(BASE_LOG_PATH)
 
@@ -74,6 +75,7 @@ for i in range(1):
     gen.train()
     critic.train()
     temp_batch_idx = 0
+    x =torch.linspace(-torch.pi,torch.pi,Z_DIM).to(device)
     # mobilenet.eval()
     for epoch in range(NUM_EPOCHS):
         correlation = 0
@@ -87,8 +89,8 @@ for i in range(1):
                 cur_batch_size = real.shape[0]
 
                 for _ in range(CRITIC_ITERATIONS):
-                    x =torch.linspace(-torch.pi,torch.pi,Z_DIM)
-                    noise = (0.1 * torch.randn(cur_batch_size, Z_DIM)+0.9*torch.sin(x))
+                    
+                    noise = (0.1 * torch.randn(cur_batch_size, Z_DIM,device=device)+0.9*torch.sin(x).to(device))
                     noise = noise.unsqueeze(2).unsqueeze(3).to(device)
                     fake = gen(noise,labels)
                     critic_real = critic(real,labels).reshape(-1)
@@ -123,7 +125,7 @@ for i in range(1):
             with torch.no_grad():
                 fake = gen(last_noise,last_label)
                 correlation = cross_correlation((last_real.detach().cpu().numpy().reshape(-1)),(fake.detach().cpu().numpy().reshape(-1)))
-                dtw,path = fastdtw((last_real.detach().cpu().numpy().reshape(-1)),(fake.detach().cpu().numpy().reshape(-1)),dist=euclidean)
+                dtw,path = fastdtw((last_real.detach().cpu().numpy().reshape(-1)),(fake.detach().cpu().numpy().reshape(-1)),dist=2)
             writer.add_scalar("Training D Loss",round(loss_critic.item(),4),epoch)
             writer.add_scalar("Training G Loss",round(loss_gen.item(),4),epoch)
             writer.add_scalar("correlation",round(correlation.item(),4),epoch)

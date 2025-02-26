@@ -1,4 +1,4 @@
-name: sEMG
+ name: sEMG
 channels:
   - defaults
 dependencies:
